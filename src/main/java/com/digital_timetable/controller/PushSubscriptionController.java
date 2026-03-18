@@ -27,22 +27,49 @@ public class PushSubscriptionController {
 
     // Store or update a push subscription
     @PostMapping("/subscribe")
-    public ResponseEntity<?> subscribe(@RequestParam Long userId, @RequestBody Map<String, Object> body, @RequestHeader(value = "User-Agent", required = false) String userAgent) {
-        Map<String, String> keys = (Map<String, String>) body.get("keys");
-        String endpoint = (String) body.get("endpoint");
-        String p256dh = keys.get("p256dh");
-        String auth = keys.get("auth");
-        PushSubscription existing = repo.findByEndpoint(endpoint);
-        if (existing == null) {
-            existing = new PushSubscription();
+    public ResponseEntity<?> subscribe(@RequestParam String userId, @RequestBody Map<String, Object> body, @RequestHeader(value = "User-Agent", required = false) String userAgent) {
+        try {
+            Long parsedUserId;
+            try {
+                parsedUserId = Long.parseLong(userId);
+            } catch (NumberFormatException e) {
+                return ResponseEntity.badRequest().body("Invalid userId. Expected a numeric userId, got: " + userId);
+            }
+
+            Object keysObj = body.get("keys");
+            if (!(keysObj instanceof Map)) {
+                return ResponseEntity.badRequest().body("Invalid subscription payload: keys is required");
+            }
+
+            Map<String, Object> keys = (Map<String, Object>) keysObj;
+            Object endpointObj = body.get("endpoint");
+            if (!(endpointObj instanceof String) || ((String) endpointObj).isBlank()) {
+                return ResponseEntity.badRequest().body("Invalid subscription payload: endpoint is required");
+            }
+            String endpoint = (String) endpointObj;
+
+            Object p256dhObj = keys.get("p256dh");
+            Object authObj = keys.get("auth");
+            if (!(p256dhObj instanceof String) || ((String) p256dhObj).isBlank() || !(authObj instanceof String) || ((String) authObj).isBlank()) {
+                return ResponseEntity.badRequest().body("Invalid subscription payload: keys.p256dh and keys.auth are required");
+            }
+            String p256dh = (String) p256dhObj;
+            String auth = (String) authObj;
+
+            PushSubscription existing = repo.findByEndpoint(endpoint);
+            if (existing == null) {
+                existing = new PushSubscription();
+            }
+            existing.setUserId(parsedUserId);
+            existing.setEndpoint(endpoint);
+            existing.setP256dh(p256dh);
+            existing.setAuth(auth);
+            existing.setUserAgent(userAgent);
+            repo.save(existing);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Failed to save subscription: " + e.getMessage());
         }
-        existing.setUserId(userId);
-        existing.setEndpoint(endpoint);
-        existing.setP256dh(p256dh);
-        existing.setAuth(auth);
-        existing.setUserAgent(userAgent);
-        repo.save(existing);
-        return ResponseEntity.ok().build();
     }
     
     // Test endpoint to send a push notification
