@@ -67,7 +67,7 @@ public class AdminController {
     public ResponseEntity<Map<String, Object>> setIntakeCourseCompletion(
             @PathVariable Long intakeId,
             @PathVariable Long courseId,
-            @RequestBody Map<String, Object> body) {
+            @RequestBody(required = false) Map<String, Object> body) {
         Map<String, Object> response = new HashMap<>();
         try {
             boolean completed = false;
@@ -76,6 +76,8 @@ public class AdminController {
                 completed = (Boolean) raw;
             } else if (raw instanceof String) {
                 completed = Boolean.parseBoolean(((String) raw).trim());
+            } else if (raw == null) {
+                throw new IllegalArgumentException("Field 'completed' is required");
             }
 
             Intake intake = intakeRepository.findById(intakeId)
