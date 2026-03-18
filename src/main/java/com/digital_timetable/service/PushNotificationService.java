@@ -7,6 +7,7 @@ import nl.martijndwars.webpush.Notification;
 import nl.martijndwars.webpush.PushService;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.security.Security;
@@ -36,6 +37,7 @@ public class PushNotificationService {
     /**
      * Send push notification to a specific user
      */
+    @Async
     public void sendNotificationToUser(Long userId, String title, String body, String icon, String url) {
         List<PushSubscription> subscriptions = pushSubscriptionRepository.findByUserId(userId);
         for (PushSubscription subscription : subscriptions) {
@@ -46,6 +48,7 @@ public class PushNotificationService {
     /**
      * Send push notification to all users
      */
+    @Async
     public void sendNotificationToAll(String title, String body, String icon, String url) {
         System.out.println("[PushNotificationService] sendNotificationToAll called. Title: " + title + ", Body: " + body);
         List<PushSubscription> allSubscriptions = pushSubscriptionRepository.findAll();
@@ -57,6 +60,7 @@ public class PushNotificationService {
     /**
      * Send push notification to users by role (requires User entity integration)
      */
+    @Async
     public void sendNotificationByRole(String role, String title, String body, String icon, String url) {
         System.out.println("[PushNotificationService] sendNotificationByRole called. Role: " + role + ", Title: " + title + ", Body: " + body);
         // TODO: Implement role-based filtering when User entity is integrated
