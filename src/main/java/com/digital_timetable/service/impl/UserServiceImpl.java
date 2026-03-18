@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     private final EntityDtoMapper entityDtoMapper;
 
     private static final String DEFAULT_ADMIN_EMAIL = "alainvava54@gmail.com";
-    private static final String DEFAULT_ADMIN_PASSWORD = "admin"; // You may change this to a more secure password
+    private static final String DEFAULT_ADMIN_PASSWORD = "Yo221122!!"; // You may change this to a more secure password
     private static final String DEFAULT_ADMIN_NAME = "Admin";
     private static final String DEFAULT_ADMIN_PHONE = "0782407887";
     private static final UserRole DEFAULT_ADMIN_ROLE = UserRole.ADMIN;
