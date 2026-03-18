@@ -9,7 +9,13 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("http://localhost:3000", "http://localhost:5173", "http://localhost:4200")
+                .allowedOriginPatterns(
+                        "https://digital-timetable.up.railway.app",
+                        "https://time-table-digitalswapp.netlify.app",
+                        "http://localhost:3000",
+                        "http://localhost:5173",
+                        "http://localhost:4200"
+                )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)

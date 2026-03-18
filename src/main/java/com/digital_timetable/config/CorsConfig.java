@@ -16,6 +16,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
         // Allowed frontend origins (Netlify + optional local dev)
         config.setAllowedOrigins(List.of(
+                "https://digital-timetable.up.railway.app",
                 "https://time-table-digitalswapp.netlify.app",
                 "http://localhost:5173",
                 "http://localhost:3000"
